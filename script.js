@@ -41,13 +41,26 @@ async function getDashboardData(query) {
         // per non fare 3 passaggi, faccio destructuring:
         const [destinations, weathers, airports] = await Promise.all(promises)
 
+        // BONUS1
+        // creo variabili con partenza indice da 0 per poi poterle usare con il codice ternario
+        const destination = destinations[0]
+        const weather = weathers[0]
+        const airport = airports[0]
+
+
         // ritorno i risultati presi dai json generati
         return {
-            city: destinations[0].name,// prendo il primo elemento come da richiesta
-            country: destinations[0].country,
-            temperature: weathers[0].temperature,
-            weather: weathers[0].weather_description,
-            airport: airports[0].name
+            // city: destinations[0].name,// prendo il primo elemento come da richiesta
+            // country: destinations[0].country,
+            // temperature: weathers[0].temperature,
+            // weather: weathers[0].weather_description,
+            // airport: airports[0].name
+
+            city: destination ? destination.name : null,
+            country: destination ? destination.country : null,
+            temperature: weather ? weather.temperature : null,
+            weather: weather ? weather.weather_description : null,
+            airport: airport ? airport.name : null
         }
 
     } catch (error) {
@@ -57,13 +70,34 @@ async function getDashboardData(query) {
 }
 
 // stampo in console tutti i dati raccolti
+// getDashboardData('london')
+//     .then(data => {
+//         console.log('Dasboard data:', data);
+//         console.log(
+//             `${data.city} is in ${data.country}.\n` +
+//             `Today there are ${data.temperature} degrees and the weather is ${data.weather}.\n` +
+//             `The main airport is ${data.airport}.\n`
+//         );
+//     })
+//     .catch(error => console.error(error));
+
 getDashboardData('london')
     .then(data => {
         console.log('Dasboard data:', data);
-        console.log(
-            `${data.city} is in ${data.country}.\n` +
-            `Today there are ${data.temperature} degrees and the weather is ${data.weather}.\n` +
-            `The main airport is ${data.airport}.\n`
-        );
+
+        let frase = ''
+
+        if (data.city !== null && data.country !== null) {
+            frase += `${data.city} is in ${data.country}.\n`
+        }
+
+        if (data.temperature !== null && data.weather !== null) {
+            frase += `Today there are ${data.temperature} degrees and the weather is ${data.weather}.\n`
+        }
+
+        if (data.airport !== null) {
+            frase += `The main airport is ${data.airport}.\n`
+        }
+        console.log(frase)
     })
     .catch(error => console.error(error));
